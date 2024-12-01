@@ -12,18 +12,23 @@ marijuana_use = np.array([1.1, 3.4, 8.7, 14.5, 22.5, 28, 33.7, 33.4, 34,
 
 # Split data into three categories
 ages_12_20 = ages[ages <= 20]
-ages_21_plus = ages[ages > 20]
+ages_21_plus = ages[ages >= 20]
 
 alcohol_12_20 = alcohol_use[ages <= 20]
 alcohol_21_plus = alcohol_use[ages > 20]
 
 marijuana_12_20 = marijuana_use[ages <= 20]
-marijuana_21_plus = marijuana_use[ages > 20]
+marijuana_21_plus = marijuana_use[ages >= 20]
 
 # Function to perform linear regression using least squares
-def linear_regression(x, y):
-    A = np.vstack((np.ones_like(x), x)).T  # Design matrix
-    coefficients = np.linalg.inv(A.T @ A) @ A.T @ y  # Solve for coefficients
+#Ax = b
+#when it is not possible to solve for the coeffecients, least square approximation finds best fit line
+#The Equation is (A^T * A)^-1 * A^T * Y
+def least_squares(x, y): # 
+    A = np.vstack((np.ones_like(x), x)).T  # Design matrix. First row is all 1's and second is X Values. We first make it a row vector and then transpose it to be a column vector
+    firstTerm = A.T @ A 
+    invertedFirstTerm = np.linalg.inv(firstTerm)
+    coefficients = invertedFirstTerm @ A.T @ y  # Solve for coefficients
     return coefficients
 
 # Function to plot marijuana data with regression lines
@@ -31,7 +36,7 @@ def plotMarijuanaData():
     plt.figure(figsize=(15, 8))
     
     # Full data
-    coefficients_full = linear_regression(ages, marijuana_use)
+    coefficients_full = least_squares(ages, marijuana_use)
     intercept_full, slope_full = coefficients_full
     y_full_pred = intercept_full + slope_full * ages
 
@@ -45,7 +50,7 @@ def plotMarijuanaData():
     plt.grid(True)
     
     # Ages 12-20
-    coefficients_12_20 = linear_regression(ages_12_20, marijuana_12_20)
+    coefficients_12_20 = least_squares(ages_12_20, marijuana_12_20)
     intercept_12_20, slope_12_20 = coefficients_12_20
     y_12_20_pred = intercept_12_20 + slope_12_20 * ages_12_20
 
@@ -59,7 +64,7 @@ def plotMarijuanaData():
     plt.grid(True)
     
     # Ages 21+
-    coefficients_21_plus = linear_regression(ages_21_plus, marijuana_21_plus)
+    coefficients_21_plus = least_squares(ages_21_plus, marijuana_21_plus)
     intercept_21_plus, slope_21_plus = coefficients_21_plus
     y_21_plus_pred = intercept_21_plus + slope_21_plus * ages_21_plus
 
@@ -80,7 +85,7 @@ def plotAlcoholData():
     plt.figure(figsize=(15, 8))
     
     # Full data
-    coefficients_full = linear_regression(ages, alcohol_use)
+    coefficients_full = least_squares(ages, alcohol_use)
     intercept_full, slope_full = coefficients_full
     y_full_pred = intercept_full + slope_full * ages
 
@@ -94,7 +99,7 @@ def plotAlcoholData():
     plt.grid(True)
     
     # Ages 12-20
-    coefficients_12_20 = linear_regression(ages_12_20, alcohol_12_20)
+    coefficients_12_20 = least_squares(ages_12_20, alcohol_12_20)
     intercept_12_20, slope_12_20 = coefficients_12_20
     y_12_20_pred = intercept_12_20 + slope_12_20 * ages_12_20
 
@@ -108,7 +113,7 @@ def plotAlcoholData():
     plt.grid(True)
     
     # Ages 21+
-    coefficients_21_plus = linear_regression(ages_21_plus, alcohol_21_plus)
+    coefficients_21_plus = least_squares(ages_21_plus, alcohol_21_plus)
     intercept_21_plus, slope_21_plus = coefficients_21_plus
     y_21_plus_pred = intercept_21_plus + slope_21_plus * ages_21_plus
 
@@ -125,5 +130,5 @@ def plotAlcoholData():
     plt.show()
 
 # Call function to plot the data
-#plotMarijuanaData()
-plotAlcoholData()
+plotMarijuanaData()
+#plotAlcoholData()
