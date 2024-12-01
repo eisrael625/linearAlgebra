@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -48,3 +49,4 @@ for i, data in enumerate(data_sets, start=1):
 
 plt.tight_layout()
 plt.show()
+
